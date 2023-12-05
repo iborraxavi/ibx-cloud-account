@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: ibx-cloud-account
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        initial-interval: 3000
+        multiplier: 1.3
+        max-interval: 10000
+        max-attempts: 20
+      uri: http://89.117.61.23:8888

@@ -1,0 +1,78 @@
+openapi: 3.0.3
+
+info:
+  version: 1.0.0
+  title: IBX microsevices cloud
+  description: IBX microsevices cloud
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Account
+    description: Account operations
+
+paths:
+  /ibx/1/user:
+    post:
+      description: User register
+      operationId: accountRegister
+      tags:
+        - Account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            example:
+              username: username
+              password: password
+      responses:
+        '200':
+          description: Successfully register
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+              example:
+                id: 1234567890
+                username: username
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username
+        password:
+          type: string
+          description: password
+    RegisterResponse:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: User token
+        username:
+          type: string
+          description: Username
+
+    Error:
+      description: Error response
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+      required:
+        - message
