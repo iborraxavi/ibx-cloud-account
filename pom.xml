@@ -11,10 +11,10 @@
 	</parent>
 
 	<groupId>com.ibx</groupId>
-	<artifactId>account</artifactId>
+	<artifactId>ibx-cloud-account</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>account</name>
+	<name>ibx-cloud-account</name>
 	<description>IBX Account</description>
 
 	<modules>
