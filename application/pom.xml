@@ -1,57 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.ibx</groupId>
-        <artifactId>ibx-cloud-account</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>com.ibx</groupId>
+    <artifactId>ibx-cloud-account</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>application</artifactId>
+  <artifactId>ibx-cloud-application</artifactId>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>5.3.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>
-                                ${project.basedir}/src/main/resources/openapi.yml
-                            </inputSpec>
-                            <generatorName>spring</generatorName>
-                            <library>spring-boot</library>
-                            <apiPackage>com.ibx.account.application.api</apiPackage>
-                            <modelPackage>com.ibx.account.application.model</modelPackage>
-                            <configOptions>
-                                <delegatePattern>true</delegatePattern>
-                                <reactive>true</reactive>
-                                <interfaceOnly>true</interfaceOnly>
-                                <useTags>true</useTags>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <ibx-cloud-domain.version>0.0.1-SNAPSHOT</ibx-cloud-domain.version>
+    <ibx-cloud-infrastructure.version>0.0.1-SNAPSHOT</ibx-cloud-infrastructure.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.ibx</groupId>
+      <artifactId>ibx-cloud-domain</artifactId>
+      <version>${ibx-cloud-domain.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.ibx</groupId>
+      <artifactId>ibx-cloud-infrastructure</artifactId>
+      <version>${ibx-cloud-infrastructure.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>5.3.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>
+                ${project.basedir}/src/main/resources/openapi.yml
+              </inputSpec>
+              <generatorName>spring</generatorName>
+              <library>spring-boot</library>
+              <apiPackage>com.ibx.account.application.api</apiPackage>
+              <modelPackage>com.ibx.account.application.model</modelPackage>
+              <modelNameSuffix>Dto</modelNameSuffix>
+              <configOptions>
+                <delegatePattern>true</delegatePattern>
+                <reactive>true</reactive>
+                <interfaceOnly>true</interfaceOnly>
+                <useTags>true</useTags>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

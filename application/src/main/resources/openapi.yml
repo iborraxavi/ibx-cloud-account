@@ -29,15 +29,144 @@ paths:
               username: username
               password: password
       responses:
-        '200':
+        '201':
           description: Successfully register
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterResponse'
+                $ref: '#/components/schemas/Account'
               example:
                 id: 1234567890
                 username: username
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      description: Find all accounts
+      operationId: findAllAccounts
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Successfully list all accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountList'
+              example:
+                id: 1234567890
+                username: username
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /ibx/1/user/{accountId}:
+    get:
+      description: Find account by id
+      operationId: findAccountById
+      tags:
+        - Account
+      parameters:
+        - $ref: '#/components/parameters/accountId'
+      responses:
+        '200':
+          description: User by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+              example:
+                id: 1234567890
+                username: username
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      description: Update account
+      operationId: updateAccount
+      tags:
+        - Account
+      parameters:
+        - $ref: '#/components/parameters/accountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            example:
+              username: username
+              password: password
+      responses:
+        '200':
+          description: Successfully user update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+              example:
+                id: 1234567890
+                username: username
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Delete account
+      operationId: deleteAccount
+      tags:
+        - Account
+      parameters:
+        - $ref: '#/components/parameters/accountId'
+      responses:
+        '204':
+          description: Successfully user delete
+        '404':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal error
           content:
@@ -56,23 +185,59 @@ components:
         password:
           type: string
           description: password
-    RegisterResponse:
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+    Account:
       type: object
       properties:
         id:
-          type: number
-          format: int64
+          type: string
           description: User token
         username:
           type: string
           description: Username
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+    AccountList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Account'
 
     Error:
       description: Error response
       type: object
       properties:
+        code:
+          type: string
+          description: Error code
+        description:
+          type: string
+          description: Error description
         message:
           type: string
           description: Error message
+        path:
+          type: string
+          description: Error path
       required:
+        - code
+        - description
         - message
+        - path
+
+  parameters:
+    accountId:
+      name: accountId
+      in: path
+      required: true
+      schema:
+        type: string
+        description: Account unique identifier
