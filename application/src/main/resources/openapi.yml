@@ -13,7 +13,7 @@ tags:
     description: Account operations
 
 paths:
-  /ibx/1/user:
+  /ibx/1/account:
     post:
       description: User register
       operationId: accountRegister
@@ -77,7 +77,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /ibx/1/user/{accountId}:
+  /ibx/1/account/{accountId}:
     get:
       description: Find account by id
       operationId: findAccountById

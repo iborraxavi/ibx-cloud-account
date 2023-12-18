@@ -5,6 +5,7 @@ import com.ibx.account.domain.messagesource.AccountMessageSource;
 import com.ibx.account.domain.model.errors.ErrorsEnum;
 import com.ibx.account.domain.model.exception.AccountAlreadyExistsException;
 import com.ibx.account.domain.model.exception.AccountNotFoundException;
+import com.ibx.account.domain.model.exception.AccountRepositoryException;
 import com.ibx.account.domain.model.exception.AccountValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class RestControllerError {
 
   @ExceptionHandler(AccountValidationException.class)
   public Mono<ResponseEntity<ErrorDto>> accountValidationException(
-      AccountValidationException exception, ServerWebExchange exchange) {
+      final AccountValidationException exception, final ServerWebExchange exchange) {
     return Mono.just(new ResponseEntity<>(
         buildFromErrorEnum(exception.getErrorsEnum(), exchange.getRequest().getPath().value(),
             exception.getParams()),
@@ -35,7 +36,7 @@ public class RestControllerError {
 
   @ExceptionHandler(AccountAlreadyExistsException.class)
   public Mono<ResponseEntity<ErrorDto>> accountAlreadyExistsException(
-      AccountAlreadyExistsException exception, ServerWebExchange exchange) {
+      final AccountAlreadyExistsException exception, final ServerWebExchange exchange) {
     return Mono.just(new ResponseEntity<>(
         buildFromErrorEnum(exception.getErrorsEnum(), exchange.getRequest().getPath().value(),
             exception.getParams()),
@@ -44,15 +45,25 @@ public class RestControllerError {
 
   @ExceptionHandler(AccountNotFoundException.class)
   public Mono<ResponseEntity<ErrorDto>> accountNotFoundException(
-      AccountNotFoundException exception, ServerWebExchange exchange) {
+      final AccountNotFoundException exception, final ServerWebExchange exchange) {
     return Mono.just(new ResponseEntity<>(
         buildFromErrorEnum(exception.getErrorsEnum(), exchange.getRequest().getPath().value(),
             exception.getParams()),
         HttpStatus.NOT_FOUND));
   }
 
-  private ErrorDto buildFromErrorEnum(ErrorsEnum errorEnum, String path, Object[] params) {
-    final ErrorDto error = new ErrorDto();
+  @ExceptionHandler(AccountRepositoryException.class)
+  public Mono<ResponseEntity<ErrorDto>> accountRepositoryException(
+      final AccountRepositoryException exception, final ServerWebExchange exchange) {
+    return Mono.just(new ResponseEntity<>(
+        buildFromErrorEnum(exception.getErrorsEnum(), exchange.getRequest().getPath().value(),
+            exception.getParams()),
+        HttpStatus.INTERNAL_SERVER_ERROR));
+  }
+
+  private ErrorDto buildFromErrorEnum(final ErrorsEnum errorEnum, final String path,
+      final Object[] params) {
+    final var error = new ErrorDto();
     error.setCode(errorEnum.getCode());
     error.setDescription(getDescription(errorEnum.getCode(), params));
     error.setMessage(getMessage(errorEnum.getCode(), params));
@@ -60,15 +71,15 @@ public class RestControllerError {
     return error;
   }
 
-  private String getDescription(String errorCode, Object[] params) {
+  private String getDescription(final String errorCode, final Object[] params) {
     return getMessageSourceMessage(String.format(ERROR_DESCRIPTION_FORMAT, errorCode), params);
   }
 
-  private String getMessage(String errorCode, Object[] params) {
+  private String getMessage(final String errorCode, final Object[] params) {
     return getMessageSourceMessage(String.format(ERROR_MESSAGE_FORMAT, errorCode), params);
   }
 
-  private String getMessageSourceMessage(String code, Object[] params) {
+  private String getMessageSourceMessage(final String code, final Object[] params) {
     return String.format(accountMessageSource.getMessage(code), params);
   }
 }

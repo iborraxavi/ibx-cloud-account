@@ -7,8 +7,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface AccountDocumentMapper {
 
-  AccountDocument toInfrastructure(Account account);
+  AccountDocument toInfrastructure(final Account account);
 
-  Account toDomain(AccountDocument accountDocument);
+  Account toDomain(final AccountDocument accountDocument);
 
 }

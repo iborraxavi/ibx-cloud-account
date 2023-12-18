@@ -1,0 +1,16 @@
+[
+  {
+    "id": "6580a416f731564f67e1e213",
+    "username": "Username1",
+    "password": "Password1",
+    "firstName": "FirstName1",
+    "lastName": "LastName1"
+  },
+  {
+    "id": "6580a416f731564f67e1e214",
+    "username": "Username2",
+    "password": "Password2",
+    "firstName": "FirstName2",
+    "lastName": "LastName2"
+  }
+]

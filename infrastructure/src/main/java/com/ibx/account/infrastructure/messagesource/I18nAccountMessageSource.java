@@ -13,7 +13,7 @@ public class I18nAccountMessageSource implements AccountMessageSource {
   private final MessageSource messageSource;
 
   @Override
-  public String getMessage(String code) {
+  public String getMessage(final String code) {
     return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
   }
 }

@@ -8,8 +8,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface AccountRestMapper {
 
-  Account mapRegisterRequestToDomain(RegisterRequestDto registerRequestDto);
+  Account mapRegisterRequestToDomain(final RegisterRequestDto registerRequestDto);
 
-  AccountDto mapAccountToInfrastructure(Account account);
+  AccountDto mapAccountToInfrastructure(final Account account);
 
 }

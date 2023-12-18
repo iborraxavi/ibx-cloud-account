@@ -1,5 +1,6 @@
 package com.ibx.account.domain.usecase.impl;
 
+import com.ibx.account.domain.messaging.DeleteAccountProducer;
 import com.ibx.account.domain.model.errors.ErrorsEnum;
 import com.ibx.account.domain.model.exception.AccountNotFoundException;
 import com.ibx.account.domain.repository.AccountRepository;
@@ -14,12 +15,15 @@ public class DeleteAccountUseCase implements DeleteAccount {
 
   private final AccountRepository accountRepository;
 
+  private final DeleteAccountProducer deleteAccountProducer;
+
   @Override
-  public Mono<Void> apply(String accountId) {
+  public Mono<Void> apply(final String accountId) {
     return accountRepository.findById(accountId)
         .switchIfEmpty(
             Mono.error(new AccountNotFoundException(ErrorsEnum.ACCOUNT_NOT_FOUND, accountId)))
-        .flatMap(account -> accountRepository.deleteById(account.id()));
+        .flatMap(account -> accountRepository.deleteById(account.id())
+            .doOnSuccess(unused -> deleteAccountProducer.sendMessage(account.id(), account)));
   }
 
 }

@@ -28,7 +28,9 @@ public enum ErrorsEnum {
   UPDATE_ACCOUNT_PASSWORD_REQUIRED("ACCOUNT_0010",
       "Password is required in account update"),
   UPDATE_ACCOUNT_USERNAME_ALREADY_EXISTS("ACCOUNT_0011",
-      "Username already exists in account update");
+      "Username already exists in account update"),
+
+  INTERNAL_SERVER_ERROR("ACCOUNT_0012", "Unexpected error");
 
   private final String code;
 

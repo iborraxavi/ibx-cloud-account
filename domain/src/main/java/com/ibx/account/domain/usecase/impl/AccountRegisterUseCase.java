@@ -19,16 +19,19 @@ public class AccountRegisterUseCase implements AccountRegister {
   private final CreateAccountValidator validator;
 
   @Override
-  public Mono<Account> apply(Account account) {
+  public Mono<Account> apply(final Account account) {
     return Mono.just(account)
         .doOnNext(validator::validate)
-        .flatMap(registerRequest -> accountRepository.findByUsername(account.username())
-            .flatMap(existingAccount ->
-                Mono.error(new AccountAlreadyExistsException(
-                        ErrorsEnum.ACCOUNT_REGISTER_USERNAME_ALREADY_EXISTS,
-                        account.username()))
-                    .thenReturn(existingAccount))
-            .switchIfEmpty(accountRepository.save(registerRequest)));
+        .flatMap(this::validateExistingUsername);
+  }
+
+  private Mono<Account> validateExistingUsername(final Account validatedAccount) {
+    return accountRepository.findByUsername(validatedAccount.username())
+        .flatMap(existingAccount -> Mono.error(new AccountAlreadyExistsException(
+                ErrorsEnum.ACCOUNT_REGISTER_USERNAME_ALREADY_EXISTS,
+                validatedAccount.username()))
+            .thenReturn(existingAccount))
+        .switchIfEmpty(Mono.defer(() -> accountRepository.save(validatedAccount)));
   }
 
 }

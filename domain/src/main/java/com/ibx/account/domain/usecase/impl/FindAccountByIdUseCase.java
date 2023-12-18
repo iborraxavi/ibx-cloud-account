@@ -16,7 +16,7 @@ public class FindAccountByIdUseCase implements FindAccountById {
   private final AccountRepository accountRepository;
 
   @Override
-  public Mono<Account> apply(String id) {
+  public Mono<Account> apply(final String id) {
     return accountRepository.findById(id)
         .switchIfEmpty(Mono.error(new AccountNotFoundException(ErrorsEnum.ACCOUNT_NOT_FOUND, id)));
   }

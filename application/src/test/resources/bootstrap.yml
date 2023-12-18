@@ -1,0 +1,36 @@
+spring:
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+  application:
+    name: ibx-cloud-account
+  webflux:
+    base-path: /
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: ibx-account-test
+      authentication-database: admin
+      username: admin
+      password: admin
+  kafka:
+    producer:
+      bootstrap-servers: 127.0.0.1:29092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 5
+      properties:
+        retry:
+          backoff.ms: 1000
+
+server:
+  port: 8090
+
+app:
+  kafka:
+    topic:
+      delete-account: ibx.delete-account-test

@@ -20,22 +20,35 @@ public class UpdateAccountUseCase implements UpdateAccount {
   private final UpdateAccountValidator validator;
 
   @Override
-  public Mono<Account> apply(String accountId, Account accountRequest) {
+  public Mono<Account> apply(final String accountId, final Account accountRequest) {
     return Mono.just(accountRequest)
         .doOnNext(validator::validate)
-        .flatMap(account -> accountRepository.findById(accountId)
-            .switchIfEmpty(Mono.error(
-                new AccountNotFoundException(ErrorsEnum.ACCOUNT_NOT_FOUND, accountId)))
-            .thenReturn(account))
-        .flatMap(
-            existingAccount -> accountRepository.findByUsernameAndIdNotIs(accountRequest.username(),
-                    accountId)
-                .flatMap(existingAccountWithExistingUsername ->
-                    Mono.error(new AccountAlreadyExistsException(
-                            ErrorsEnum.ACCOUNT_REGISTER_USERNAME_ALREADY_EXISTS,
-                            existingAccountWithExistingUsername.username()))
-                        .thenReturn(existingAccount))
-                .switchIfEmpty(accountRepository.update(accountId, accountRequest)));
+        .flatMap(account -> validateExistingAccount(accountId, account))
+        .flatMap(existingAccount -> updateAccount(accountId, accountRequest, existingAccount));
+  }
+
+  private Mono<Account> validateExistingAccount(final String accountId, final Account account) {
+    return accountRepository.findById(accountId)
+        .switchIfEmpty(Mono.error(
+            new AccountNotFoundException(ErrorsEnum.ACCOUNT_NOT_FOUND, accountId)))
+        .thenReturn(account);
+  }
+
+  private Mono<Account> updateAccount(final String accountId, final Account accountRequest,
+      final Account existingAccount) {
+    return validateExistingUsername(accountId, accountRequest, existingAccount)
+        .switchIfEmpty(Mono.defer(() -> accountRepository.update(accountId, accountRequest)));
+  }
+
+  private Mono<Account> validateExistingUsername(final String accountId,
+      final Account accountRequest, final Account existingAccount) {
+    return accountRepository.findByUsernameAndIdNotIs(accountRequest.username(),
+            accountId)
+        .flatMap(existingAccountWithExistingUsername ->
+            Mono.error(new AccountAlreadyExistsException(
+                    ErrorsEnum.UPDATE_ACCOUNT_USERNAME_ALREADY_EXISTS,
+                    existingAccountWithExistingUsername.username()))
+                .thenReturn(existingAccount));
   }
 
 }
